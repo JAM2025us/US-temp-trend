@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini Data Page – Text + Table + Chart + Image</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --bg:#f6f8fb; --card:#fff; --text:#0f172a; --muted:#64748b; --border:#e2e8f0; --accent:#2563eb; }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); color:var(--text)}
+    .container{max-width:1120px;margin:24px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:1024px){.grid{grid-template-columns:2fr 1fr}}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+    .card h2{margin:0;font-size:20px}
+    .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+    .card-content{padding:16px 20px}
+    .row{display:grid;gap:8px;margin-bottom:12px}
+    .row-2{grid-template-columns:1fr}
+    @media(min-width:640px){.row-2{grid-template-columns:1fr 1fr}}
+    label{font-size:12px;color:var(--muted)}
+    input[type="text"], input[type="number"], textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font:inherit}
+    textarea{min-height:96px;resize:vertical}
+    .btn{appearance:none;border:1px solid var(--border);background:#fff;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+    .btn:hover{border-color:#cbd5e1}
+    .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    table{width:100%;border-collapse:collapse}
+    th, td{padding:10px;border-top:1px solid var(--border);text-align:left}
+    thead th{font-size:12px;color:var(--muted);background:#f8fafc}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px}
+    .preview{border:1px dashed var(--border);border-radius:12px;padding:12px;min-height:120px;background:#fff}
+    .muted{color:var(--muted);font-size:14px}
+    .imgwrap{border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;min-height:200px}
+    .imgwrap img{max-width:100%;height:auto;display:block}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="grid">
+      <!-- Left: Text + Table -->
+      <section class="card">
+        <div class="card-header">
+          <h2>Text</h2>
+          <span class="pill">Live preview</span>
+        </div>
+        <div class="card-content">
+          <div class="row row-2">
+            <div>
+              <label for="title">Page title</label>
+              <input id="title" type="text" value="My Mini Data Page" />
+            </div>
+            <div>
+              <label for="desc">Description</label>
+              <textarea id="desc">Use the form to add rows to the table. The chart updates live. Upload an image and it will display on the right.</textarea>
+            </div>
+          </div>
+          <div class="preview" id="textPreview">
+            <h1 id="hTitle" style="margin:4px 0 6px 0;font-size:28px">My Mini Data Page</h1>
+            <p id="pDesc" class="muted">Use the form to add rows to the table. The chart updates live. Upload an image and it will display on the right.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Image -->
+      <section class="card">
+        <div class="card-header">
+          <h2>Image</h2>
+          <div class="toolbar">
+            <input id="imgInput" type="file" accept="image/*" />
+            <button class="btn" id="clearImg">Clear</button>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="imgwrap" id="imgWrap"><span class="muted">No image selected</span></div>
+        </div>
+      </section>
+
+      <!-- Left (second row): Table + Graph -->
+      <section class="card" style="grid-column:1 / span 1">
+        <div class="card-header">
+          <h2>Table</h2>
+          <div class="toolbar">
+            <button class="btn" id="addRow">+ Add row</button>
+            <span class="muted">Total: <strong id="total">0</strong></span>
+          </div>
+        </div>
+        <div class="card-content">
+          <div style="overflow-x:auto">
+            <table id="dataTable">
+              <thead>
+                <tr>
+                  <th style="width:50%">Label</th>
+                  <th style="width:30%">Value</th>
+                  <th style="width:20%"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="text" value="Jan" /></td>
+                  <td><input type="number" value="12" /></td>
+                  <td><button class="btn" data-del>Delete</button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Feb" /></td>
+                  <td><input type="number" value="18" /></td>
+                  <td><button class="btn" data-del>Delete</button></td>
+                </tr>
+                <tr>
+                  <td><input type="text" value="Mar" /></td>
+                  <td><input type="number" value="9" /></td>
+                  <td><button class="btn" data-del>Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="grid-column:1 / span 1">
+        <div class="card-header">
+          <h2>Graph</h2>
+          <span class="muted">Bar + line from table</span>
+        </div>
+        <div class="card-content">
+          <canvas id="chart" height="260"></canvas>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    // ===== Text live preview =====
+    const titleEl = document.getElementById('title');
+    const descEl = document.getElementById('desc');
+    const hTitle = document.getElementById('hTitle');
+    const pDesc = document.getElementById('pDesc');
+    titleEl.addEventListener('input', ()=> hTitle.textContent = titleEl.value || '');
+    descEl.addEventListener('input', ()=> pDesc.textContent = descEl.value || '');
+
+    // ===== Image upload/preview =====
+    const imgInput = document.getElementById('imgInput');
+    const imgWrap = document.getElementById('imgWrap');
+    const clearBtn = document.getElementById('clearImg');
+    let imgTag = null;
+
+    imgInput.addEventListener('change', (e)=>{
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      const url = URL.createObjectURL(file);
+      if(!imgTag){ imgTag = document.createElement('img'); imgWrap.innerHTML = ''; imgWrap.appendChild(imgTag); }
+      imgTag.src = url;
+    });
+    clearBtn.addEventListener('click', ()=>{ imgTag = null; imgWrap.innerHTML = '<span class="muted">No image selected</span>'; imgInput.value = ''; });
+
+    // ===== Table utilities =====
+    const table = document.getElementById('dataTable');
+    const addRowBtn = document.getElementById('addRow');
+    const totalEl = document.getElementById('total');
+
+    function readRows(){
+      const rows = [...table.tBodies[0].rows].map(tr => {
+        const label = tr.cells[0].querySelector('input').value.trim();
+        const value = Number(tr.cells[1].querySelector('input').value) || 0;
+        return { label, value };
+      });
+      return rows;
+    }
+
+    function updateTotal(){
+      const sum = readRows().reduce((s,r)=> s + (r.value||0), 0);
+      totalEl.textContent = sum;
+    }
+
+    function attachRowListeners(tr){
+      tr.querySelectorAll('input').forEach(inp => inp.addEventListener('input', ()=>{ updateTotal(); drawChart(); }));
+      const delBtn = tr.querySelector('[data-del]');
+      delBtn.addEventListener('click', ()=>{ tr.remove(); updateTotal(); drawChart(); });
+    }
+
+    // attach to existing rows
+    [...table.tBodies[0].rows].forEach(attachRowListeners);
+
+    addRowBtn.addEventListener('click', ()=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" value="Item ${table.tBodies[0].rows.length + 1}" /></td>
+        <td><input type="number" value="0" /></td>
+        <td><button class="btn" data-del>Delete</button></td>
+      `;
+      table.tBodies[0].appendChild(tr);
+      attachRowListeners(tr);
+      updateTotal();
+      drawChart();
+    });
+
+    // ===== Chart.js setup =====
+    const ctx = document.getElementById('chart');
+    let chart;
+
+    function drawChart(){
+      const data = readRows();
+      const labels = data.map(d => d.label);
+      const values = data.map(d => d.value);
+
+      const dsBar = {
+        type: 'bar',
+        label: 'Value (bar)',
+        data: values,
+        borderRadius: 6,
+      };
+      const dsLine = {
+        type: 'line',
+        label: 'Value (line)',
+        data: values,
+        tension: 0.35,
+        pointRadius: 3,
+      };
+
+      const cfg = {
+        data: { labels, datasets: [dsBar, dsLine] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+          plugins: { legend: { position: 'bottom' } }
+        }
+      };
+
+      if(chart){ chart.data = cfg.data; chart.update(); return; }
+      chart = new Chart(ctx, cfg);
+    }
+
+    // initial
+    updateTotal();
+    drawChart();
+  </script>
+</body>
+</html>
